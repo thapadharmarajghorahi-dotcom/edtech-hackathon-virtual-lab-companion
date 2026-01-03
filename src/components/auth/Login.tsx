@@ -5,8 +5,9 @@ import { RoleSelector } from './RoleSelector';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { FlaskConical, ArrowRight, Sparkles } from 'lucide-react';
+import { ArrowRight, Sparkles } from 'lucide-react';
 import { toast } from 'sonner';
+import { MolecularLogo } from '@/components/MolecularLogo';
 
 export function Login() {
   const [email, setEmail] = useState('');
@@ -17,7 +18,7 @@ export function Login() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!email || !name || !selectedRole) {
       toast.error('Please fill all fields and select a role');
       return;
@@ -38,14 +39,14 @@ export function Login() {
 
       <div className="relative w-full max-w-md animate-slide-up">
         <div className="mb-8 text-center">
-          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl gradient-primary shadow-glow-primary animate-float">
-            <FlaskConical className="h-8 w-8 text-primary-foreground" />
+          <div className="mx-auto mb-6 flex justify-center">
+            <MolecularLogo size={48} />
           </div>
-          <h1 className="font-display text-3xl font-bold text-foreground">
+          <h1 className="font-display text-4xl font-bold text-foreground tracking-tight">
             VirtualLab
           </h1>
-          <p className="mt-2 text-muted-foreground">
-            Interactive Science Laboratory Simulator
+          <p className="mt-2 text-muted-foreground font-medium uppercase tracking-widest text-xs">
+            Science Laboratory Simulator
           </p>
         </div>
 

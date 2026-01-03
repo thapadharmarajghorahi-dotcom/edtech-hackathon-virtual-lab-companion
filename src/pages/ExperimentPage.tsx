@@ -16,13 +16,13 @@ import ProjectileMotion3D from '@/experiments/threeD/ProjectileMotion3D';
 export function ExperimentPage() {
   const { id } = useParams();
   const navigate = useNavigate();
-  
+
   const experiment = EXPERIMENTS.find(e => e.id === id);
-  
+
   // Determine mode type based on experiment
   const isProjectileMotion = experiment?.id === 'projectile-motion';
   const [mode, setMode] = useState<'2d' | 'animated' | '3d'>(isProjectileMotion ? '2d' : '2d');
-  
+
   if (!experiment) {
     return (
       <div className="min-h-screen bg-background">
@@ -46,21 +46,25 @@ export function ExperimentPage() {
   const hasSimulation = experiment.id === 'ohms-law' || experiment.id === 'projectile-motion';
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-[#020617] relative overflow-hidden text-slate-200">
+      {/* Cool Interactive Background Elements */}
+      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-blue-600/10 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/2 animate-pulse" />
+      <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-purple-600/10 rounded-full blur-[120px] translate-y-1/2 -translate-x-1/2" />
+
       <Navbar />
-      
-      <main className="container py-6">
+
+      <main className="container relative z-10 py-8">
         {/* Header */}
-        <div className="mb-6 animate-fade-in">
-          <Button 
-            variant="ghost" 
+        <div className="mb-8 animate-fade-in">
+          <Button
+            variant="ghost"
             onClick={() => navigate(-1)}
-            className="mb-4 gap-2"
+            className="mb-6 gap-2 text-slate-400 hover:text-white transition-colors"
           >
             <ArrowLeft className="h-4 w-4" />
             Back to Dashboard
           </Button>
-          
+
           <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
             <div>
               <div className="flex items-center gap-3 mb-2">
@@ -216,62 +220,62 @@ export function ExperimentPage() {
 
             {/* Right Column - Info & Procedure */}
             <div className="space-y-6">
-            {/* Objectives */}
-            <div className="p-4 rounded-xl bg-card border border-border animate-slide-up" style={{ animationDelay: '50ms' }}>
-              <h3 className="font-display font-semibold text-foreground flex items-center gap-2 mb-3">
-                <Target className="h-4 w-4 text-primary" />
-                Objectives
-              </h3>
-              <ul className="space-y-2">
-                {experiment.objectives.map((obj, index) => (
-                  <li key={index} className="flex items-start gap-2 text-sm text-muted-foreground">
-                    <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-medium text-primary">
-                      {index + 1}
-                    </span>
-                    {obj}
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* Apparatus */}
-            <div className="p-4 rounded-xl bg-card border border-border animate-slide-up" style={{ animationDelay: '100ms' }}>
-              <h3 className="font-display font-semibold text-foreground flex items-center gap-2 mb-3">
-                <Beaker className="h-4 w-4 text-secondary" />
-                Apparatus Required
-              </h3>
-              <div className="flex flex-wrap gap-2">
-                {experiment.apparatus.map((item, index) => (
-                  <Badge key={index} variant="secondary" className="text-xs">
-                    {item}
-                  </Badge>
-                ))}
+              {/* Objectives */}
+              <div className="p-4 rounded-xl bg-card border border-border animate-slide-up" style={{ animationDelay: '50ms' }}>
+                <h3 className="font-display font-semibold text-foreground flex items-center gap-2 mb-3">
+                  <Target className="h-4 w-4 text-primary" />
+                  Objectives
+                </h3>
+                <ul className="space-y-2">
+                  {experiment.objectives.map((obj, index) => (
+                    <li key={index} className="flex items-start gap-2 text-sm text-muted-foreground">
+                      <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-medium text-primary">
+                        {index + 1}
+                      </span>
+                      {obj}
+                    </li>
+                  ))}
+                </ul>
               </div>
-            </div>
 
-            {/* Procedure Steps */}
-            {hasSimulation && (
-              <div className="animate-slide-up" style={{ animationDelay: '150ms' }}>
-                <ProcedureSteps />
+              {/* Apparatus */}
+              <div className="p-4 rounded-xl bg-card border border-border animate-slide-up" style={{ animationDelay: '100ms' }}>
+                <h3 className="font-display font-semibold text-foreground flex items-center gap-2 mb-3">
+                  <Beaker className="h-4 w-4 text-secondary" />
+                  Apparatus Required
+                </h3>
+                <div className="flex flex-wrap gap-2">
+                  {experiment.apparatus.map((item, index) => (
+                    <Badge key={index} variant="secondary" className="text-xs">
+                      {item}
+                    </Badge>
+                  ))}
+                </div>
               </div>
-            )}
 
-            {/* Info Box */}
-            <div className="p-4 rounded-xl bg-primary/5 border border-primary/20 animate-slide-up" style={{ animationDelay: '200ms' }}>
-              <div className="flex gap-3">
-                <Info className="h-5 w-5 text-primary shrink-0 mt-0.5" />
-                <div>
-                  <h4 className="font-medium text-foreground text-sm mb-1">Did you know?</h4>
-                  <p className="text-xs text-muted-foreground">
-                    {experiment.subject === 'physics' && "Ohm's Law was discovered by Georg Simon Ohm in 1827. It forms the foundation of electrical circuit analysis."}
-                    {experiment.subject === 'chemistry' && "The word 'titration' comes from the French word 'titre', meaning 'title' or 'standard'."}
-                    {experiment.subject === 'biology' && "The first microscope was invented by Zacharias Janssen around 1590."}
-                  </p>
+              {/* Procedure Steps */}
+              {hasSimulation && (
+                <div className="animate-slide-up" style={{ animationDelay: '150ms' }}>
+                  <ProcedureSteps />
+                </div>
+              )}
+
+              {/* Info Box */}
+              <div className="p-4 rounded-xl bg-primary/5 border border-primary/20 animate-slide-up" style={{ animationDelay: '200ms' }}>
+                <div className="flex gap-3">
+                  <Info className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+                  <div>
+                    <h4 className="font-medium text-foreground text-sm mb-1">Did you know?</h4>
+                    <p className="text-xs text-muted-foreground">
+                      {experiment.subject === 'physics' && "Ohm's Law was discovered by Georg Simon Ohm in 1827. It forms the foundation of electrical circuit analysis."}
+                      {experiment.subject === 'chemistry' && "The word 'titration' comes from the French word 'titre', meaning 'title' or 'standard'."}
+                      {experiment.subject === 'biology' && "The first microscope was invented by Zacharias Janssen around 1590."}
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
         )}
       </main>
     </div>
