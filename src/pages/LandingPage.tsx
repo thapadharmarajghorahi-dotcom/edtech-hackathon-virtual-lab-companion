@@ -38,55 +38,13 @@ export function LandingPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-400 via-blue-300 to-green-200 relative overflow-hidden">
-      {/* Background Elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {/* Background image (falls back to placeholder.svg if missing) */}
-        <img
-          src="/hat-screenshot.png"
-          onError={(e) => { (e.currentTarget as HTMLImageElement).src = '/placeholder.svg'; }}
-          alt="background"
-          className="absolute inset-0 w-full h-full object-cover object-center opacity-90 bg-entrance"
-        />
-        {/* subtle dark overlay for readability */}
-        <div className="absolute inset-0 bg-black/20" />
-        {/* Sky Gradient */}
-        <div className="absolute top-0 left-0 right-0 h-2/3 bg-gradient-to-b from-blue-400 to-blue-300" />
-        
-        {/* Mountains Background */}
-        <div className="absolute bottom-0 left-0 right-0 h-1/3">
-          <svg viewBox="0 0 1200 300" className="w-full h-full">
-            <path
-              d="M0,300 L0,200 Q150,150 300,180 T600,170 T900,190 T1200,180 L1200,300 Z"
-              fill="#64748b"
-              opacity="0.6"
-            />
-            <path
-              d="M0,300 L0,220 Q200,180 400,200 T800,190 T1200,200 L1200,300 Z"
-              fill="#475569"
-              opacity="0.8"
-            />
-            {/* Snow caps */}
-            <path
-              d="M200,180 L250,150 L300,180 Z"
-              fill="#ffffff"
-              opacity="0.9"
-            />
-            <path
-              d="M600,170 L650,140 L700,170 Z"
-              fill="#ffffff"
-              opacity="0.9"
-            />
-          </svg>
-        </div>
-        
-        {/* Trees/Green area */}
-        <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-green-600 to-green-400 opacity-60" />
-        
-        {/* Decorative Elements */}
-        <div className="absolute top-20 right-10 w-32 h-32 bg-white/20 rounded-full blur-3xl" />
-        <div className="absolute bottom-40 left-10 w-40 h-40 bg-green-300/30 rounded-full blur-3xl" />
-      </div>
+    <div className="min-h-screen relative overflow-hidden">
+      <img
+        src="/background.png"
+        alt="Virtual Lab Background"
+        className="absolute inset-0 w-full h-full object-cover"
+      />
+      <div className="absolute inset-0 bg-gradient-to-br from-black/30 via-black/20 to-black/30" />
 
       <div className="relative z-10 container mx-auto px-4 py-8">
         {/* Logo Section */}

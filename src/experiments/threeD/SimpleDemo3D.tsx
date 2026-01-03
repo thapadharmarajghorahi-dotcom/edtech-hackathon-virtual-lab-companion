@@ -1,6 +1,6 @@
 import React, { useState, useRef, useCallback, useMemo } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { OrbitControls, Text, Environment, ContactShadows, AccumulativeShadows } from '@react-three/drei';
+import { OrbitControls, Text } from '@react-three/drei';
 import * as THREE from 'three';
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
@@ -32,16 +32,12 @@ interface Wire {
 
 // Hyper-realistic Breadboard
 function Breadboard3D() {
-  const material = useMemo(() => new THREE.MeshStandardMaterial({
+  const material = useMemo(() => new THREE.MeshBasicMaterial({
     color: '#f1f5f9',
-    roughness: 0.8,
-    metalness: 0.1,
   }), []);
   
-  const holeMaterial = useMemo(() => new THREE.MeshStandardMaterial({
+  const holeMaterial = useMemo(() => new THREE.MeshBasicMaterial({
     color: '#cbd5e1',
-    roughness: 0.3,
-    metalness: 0.9,
   }), []);
   
   return (
@@ -59,7 +55,6 @@ function Breadboard3D() {
             key={`hole-${i}-${j}`}
             rotation={[-Math.PI / 2, 0, 0]}
             position={[-4.5 + j * 0.3, 0.11, -3 + i * 0.3]}
-            castShadow
           >
             <cylinderGeometry args={[0.02, 0.02, 0.05, 16]} />
             <primitive object={holeMaterial} />
@@ -70,11 +65,11 @@ function Breadboard3D() {
       {/* Power rails - red and blue */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[-5.2, 0.12, 0]}>
         <boxGeometry args={[0.15, 6, 0.08]} />
-        <meshStandardMaterial color="#ef4444" roughness={0.2} metalness={0.8} />
+        <meshBasicMaterial color="#ef4444" />
       </mesh>
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[5.2, 0.12, 0]}>
         <boxGeometry args={[0.15, 6, 0.08]} />
-        <meshStandardMaterial color="#3b82f6" roughness={0.2} metalness={0.8} />
+        <meshBasicMaterial color="#3b82f6" />
       </mesh>
       
       {/* Labels */}
@@ -112,40 +107,32 @@ function Battery9V({ position, voltage, isSelected, onClick }: {
   return (
     <group ref={batteryRef} position={position} onClick={onClick}>
       {/* Battery body - matte plastic */}
-      <mesh castShadow receiveShadow>
+      <mesh>
         <boxGeometry args={[0.5, 0.7, 0.25]} />
-        <meshStandardMaterial 
-          color={isSelected ? '#0ea5e9' : '#1e293b'} 
-          roughness={0.7}
-          metalness={0.1}
+        <meshBasicMaterial 
+          color={isSelected ? '#0ea5e9' : '#1e293b'}
         />
       </mesh>
       
       {/* Battery label */}
       <mesh position={[0, 0, 0.13]}>
         <planeGeometry args={[0.4, 0.6]} />
-        <meshStandardMaterial color="#0ea5e9" />
+        <meshBasicMaterial color="#0ea5e9" />
       </mesh>
       
       {/* Positive terminal */}
-      <mesh position={[0, 0.4, 0]} castShadow>
+      <mesh position={[0, 0.4, 0]}>
         <cylinderGeometry args={[0.04, 0.04, 0.1, 16]} />
-        <meshStandardMaterial 
-          color="#ef4444" 
-          metalness={1} 
-          roughness={0}
-          envMapIntensity={2}
+        <meshBasicMaterial 
+          color="#ef4444"
         />
       </mesh>
       
       {/* Negative terminal */}
-      <mesh position={[0, -0.4, 0]} castShadow>
+      <mesh position={[0, -0.4, 0]}>
         <cylinderGeometry args={[0.04, 0.04, 0.1, 16]} />
-        <meshStandardMaterial 
-          color="#3b82f6" 
-          metalness={1} 
-          roughness={0}
-          envMapIntensity={2}
+        <meshBasicMaterial 
+          color="#3b82f6"
         />
       </mesh>
       
@@ -164,7 +151,7 @@ function Battery9V({ position, voltage, isSelected, onClick }: {
       {isSelected && (
         <mesh position={[0, 0, 0.2]} rotation={[-Math.PI / 2, 0, 0]}>
           <ringGeometry args={[0.3, 0.35, 32]} />
-          <meshStandardMaterial color="#0ea5e9" transparent opacity={0.6} />
+          <meshBasicMaterial color="#0ea5e9" transparent opacity={0.6} />
         </mesh>
       )}
     </group>
@@ -187,40 +174,32 @@ function Resistor3D({ position, resistance, isSelected, onClick }: {
   return (
     <group position={position} rotation={[0, Math.PI / 2, 0]} onClick={onClick}>
       {/* Resistor body - ceramic */}
-      <mesh castShadow receiveShadow>
+      <mesh>
         <cylinderGeometry args={[0.12, 0.12, 0.6, 16]} />
-        <meshStandardMaterial 
-          color={isSelected ? '#0ea5e9' : '#f8fafc'} 
-          roughness={0.6}
-          metalness={0.1}
+        <meshBasicMaterial 
+          color={isSelected ? '#0ea5e9' : '#f8fafc'}
         />
       </mesh>
       
       {/* Color bands */}
       {bandColors.map((color, i) => (
-        <mesh key={i} position={[-0.2 + i * 0.13, 0, 0.13]} castShadow>
+        <mesh key={i} position={[-0.2 + i * 0.13, 0, 0.13]}>
           <cylinderGeometry args={[0.13, 0.13, 0.08, 16]} />
-          <meshStandardMaterial color={color} roughness={0.4} />
+          <meshBasicMaterial color={color} />
         </mesh>
       ))}
       
       {/* Wire leads - copper */}
-      <mesh position={[0, 0, 0.35]} castShadow>
+      <mesh position={[0, 0, 0.35]}>
         <cylinderGeometry args={[0.02, 0.02, 0.25, 8]} />
-        <meshStandardMaterial 
-          color="#b87333" 
-          metalness={0.9} 
-          roughness={0.1}
-          envMapIntensity={1.5}
+        <meshBasicMaterial 
+          color="#b87333"
         />
       </mesh>
-      <mesh position={[0, 0, -0.35]} castShadow>
+      <mesh position={[0, 0, -0.35]}>
         <cylinderGeometry args={[0.02, 0.02, 0.25, 8]} />
-        <meshStandardMaterial 
-          color="#b87333" 
-          metalness={0.9} 
-          roughness={0.1}
-          envMapIntensity={1.5}
+        <meshBasicMaterial 
+          color="#b87333"
         />
       </mesh>
       
@@ -239,7 +218,7 @@ function Resistor3D({ position, resistance, isSelected, onClick }: {
       {isSelected && (
         <mesh position={[0, 0, 0.45]} rotation={[-Math.PI / 2, 0, 0]}>
           <ringGeometry args={[0.35, 0.4, 32]} />
-          <meshStandardMaterial color="#0ea5e9" transparent opacity={0.6} />
+          <meshBasicMaterial color="#0ea5e9" transparent opacity={0.6} />
         </mesh>
       )}
     </group>
@@ -256,23 +235,21 @@ function Capacitor3D({ position, capacitance, isSelected, onClick }: {
   return (
     <group position={position} onClick={onClick}>
       {/* Capacitor body */}
-      <mesh castShadow receiveShadow>
+      <mesh>
         <cylinderGeometry args={[0.15, 0.15, 0.4, 16]} />
-        <meshStandardMaterial 
-          color={isSelected ? '#0ea5e9' : '#f1f5f9'} 
-          roughness={0.5}
-          metalness={0.2}
+        <meshBasicMaterial 
+          color={isSelected ? '#0ea5e9' : '#f1f5f9'}
         />
       </mesh>
       
       {/* Leads */}
-      <mesh position={[0, 0, 0.25]} castShadow>
+      <mesh position={[0, 0, 0.25]}>
         <cylinderGeometry args={[0.015, 0.015, 0.2, 8]} />
-        <meshStandardMaterial color="#b87333" metalness={0.9} roughness={0.1} />
+        <meshBasicMaterial color="#b87333" />
       </mesh>
-      <mesh position={[0, 0, -0.25]} castShadow>
+      <mesh position={[0, 0, -0.25]}>
         <cylinderGeometry args={[0.015, 0.015, 0.2, 8]} />
-        <meshStandardMaterial color="#b87333" metalness={0.9} roughness={0.1} />
+        <meshBasicMaterial color="#b87333" />
       </mesh>
       
       {/* Label */}
@@ -289,7 +266,7 @@ function Capacitor3D({ position, capacitance, isSelected, onClick }: {
       {isSelected && (
         <mesh position={[0, 0, 0.35]} rotation={[-Math.PI / 2, 0, 0]}>
           <ringGeometry args={[0.2, 0.25, 32]} />
-          <meshStandardMaterial color="#0ea5e9" transparent opacity={0.6} />
+          <meshBasicMaterial color="#0ea5e9" transparent opacity={0.6} />
         </mesh>
       )}
     </group>
@@ -307,16 +284,10 @@ function LED3D({ position, isSelected, onClick, isActive, current }: {
   const ledRef = useRef<THREE.Mesh>(null);
   
   useFrame(() => {
-    if (ledRef.current && ledRef.current.material instanceof THREE.MeshStandardMaterial) {
-      if (isActive && current && current > 0) {
-        // LED glows brighter with more current
-        const intensity = Math.min(2, 0.5 + current * 15);
-        ledRef.current.material.emissiveIntensity = intensity;
-        // Add pulsing effect
-        const pulse = 1 + Math.sin(Date.now() / 200) * 0.2;
-        ledRef.current.material.emissiveIntensity = intensity * pulse;
-      } else {
-        ledRef.current.material.emissiveIntensity = 0.1;
+    if (ledRef.current) {
+      // Simple color change based on active state
+      if (ledRef.current.material instanceof THREE.MeshBasicMaterial) {
+        ledRef.current.material.color.setHex(isActive && current && current > 0 ? 0x22c55e : 0x1e293b);
       }
     }
   });
@@ -324,24 +295,21 @@ function LED3D({ position, isSelected, onClick, isActive, current }: {
   return (
     <group position={position} onClick={onClick}>
       {/* LED body */}
-      <mesh ref={ledRef} castShadow receiveShadow>
+      <mesh ref={ledRef}>
         <cylinderGeometry args={[0.08, 0.08, 0.15, 16]} />
-        <meshStandardMaterial 
-          color={isSelected ? '#0ea5e9' : '#22c55e'} 
-          emissive={isActive && current && current > 0 ? '#22c55e' : (isSelected ? '#0ea5e9' : '#22c55e')}
-          emissiveIntensity={isActive && current && current > 0 ? 1 : 0.5}
-          roughness={0.3}
+        <meshBasicMaterial 
+          color={isSelected ? '#0ea5e9' : '#22c55e'}
         />
       </mesh>
       
       {/* Leads */}
-      <mesh position={[0, 0, 0.1]} castShadow>
+      <mesh position={[0, 0, 0.1]}>
         <cylinderGeometry args={[0.012, 0.012, 0.15, 8]} />
-        <meshStandardMaterial color="#b87333" metalness={0.9} />
+        <meshBasicMaterial color="#b87333" />
       </mesh>
-      <mesh position={[0, 0, -0.1]} castShadow>
+      <mesh position={[0, 0, -0.1]}>
         <cylinderGeometry args={[0.012, 0.012, 0.15, 8]} />
-        <meshStandardMaterial color="#b87333" metalness={0.9} />
+        <meshBasicMaterial color="#b87333" />
       </mesh>
       
       {isSelected && (
@@ -366,10 +334,9 @@ function Multimeter3D({ position, value, unit, isSelected, onClick }: {
   
   useFrame(() => {
     if (displayRef.current) {
-      // Soft glowing effect
-      const intensity = 0.3 + Math.sin(Date.now() / 1000) * 0.1;
-      if (displayRef.current.material instanceof THREE.MeshStandardMaterial) {
-        displayRef.current.material.emissiveIntensity = intensity;
+      // Simple display
+      if (displayRef.current.material instanceof THREE.MeshBasicMaterial) {
+        displayRef.current.material.color.setHex(0x0f172a);
       }
     }
   });
@@ -377,22 +344,18 @@ function Multimeter3D({ position, value, unit, isSelected, onClick }: {
   return (
     <group position={position} onClick={onClick}>
       {/* Multimeter body - industrial design */}
-      <mesh castShadow receiveShadow>
+      <mesh>
         <boxGeometry args={[0.8, 0.6, 0.25]} />
-        <meshStandardMaterial 
-          color={isSelected ? '#0ea5e9' : '#ffffff'} 
-          roughness={0.3}
-          metalness={0.4}
+        <meshBasicMaterial 
+          color={isSelected ? '#0ea5e9' : '#ffffff'}
         />
       </mesh>
       
       {/* LCD screen with soft backlight */}
       <mesh position={[0, 0.1, 0.13]} ref={displayRef}>
         <planeGeometry args={[0.65, 0.35]} />
-        <meshStandardMaterial 
-          color="#0f172a" 
-          emissive="#00ff88"
-          emissiveIntensity={0.3}
+        <meshBasicMaterial 
+          color="#0f172a"
         />
       </mesh>
       
@@ -419,19 +382,19 @@ function Multimeter3D({ position, value, unit, isSelected, onClick }: {
       </Text>
       
       {/* Probes */}
-      <mesh position={[-0.4, -0.2, 0]} castShadow>
+      <mesh position={[-0.4, -0.2, 0]}>
         <cylinderGeometry args={[0.015, 0.015, 0.3, 8]} />
-        <meshStandardMaterial color="#1e293b" metalness={0.8} />
+        <meshBasicMaterial color="#1e293b" />
       </mesh>
-      <mesh position={[0.4, -0.2, 0]} castShadow>
+      <mesh position={[0.4, -0.2, 0]}>
         <cylinderGeometry args={[0.015, 0.015, 0.3, 8]} />
-        <meshStandardMaterial color="#1e293b" metalness={0.8} />
+        <meshBasicMaterial color="#1e293b" />
       </mesh>
       
       {isSelected && (
         <mesh position={[0, 0.1, 0.3]} rotation={[-Math.PI / 2, 0, 0]}>
           <ringGeometry args={[0.45, 0.5, 32]} />
-          <meshStandardMaterial color="#0ea5e9" transparent opacity={0.6} />
+          <meshBasicMaterial color="#0ea5e9" transparent opacity={0.6} />
         </mesh>
       )}
     </group>
@@ -470,12 +433,6 @@ function CurrentFlowParticles({
         
         // Add slight vertical offset to show they're inside the wire
         child.position.y += 0.02;
-        
-        // Make particles glow based on current intensity
-        if (child.material instanceof THREE.MeshStandardMaterial) {
-          const intensity = Math.min(1, current * 10);
-          child.material.emissiveIntensity = intensity;
-        }
       }
     });
   });
@@ -487,12 +444,8 @@ function CurrentFlowParticles({
       {Array.from({ length: particleCount }).map((_, i) => (
         <mesh key={i}>
           <sphereGeometry args={[0.015, 8, 8]} />
-          <meshStandardMaterial 
-            color="#fbbf24" 
-            emissive="#fbbf24"
-            emissiveIntensity={0.8}
-            transparent
-            opacity={0.9}
+          <meshBasicMaterial 
+            color="#fbbf24"
           />
         </mesh>
       ))}
@@ -518,22 +471,13 @@ function JumperWire({
     return new THREE.CatmullRomCurve3([wire.fromPos, mid1, mid2, wire.toPos]);
   }, [wire]);
   
-  // Wire glow intensity based on current
-  const glowIntensity = useMemo(() => {
-    return isActive ? Math.min(1.5, current * 15) : 0;
-  }, [isActive, current]);
-  
   return (
     <group>
       {/* Wire insulation with current glow */}
       <mesh>
         <tubeGeometry args={[curve, 30, 0.025, 8, false]} />
-        <meshStandardMaterial 
+        <meshBasicMaterial 
           color={isActive ? '#fbbf24' : '#1e293b'}
-          emissive={isActive ? '#fbbf24' : '#000000'}
-          emissiveIntensity={glowIntensity}
-          roughness={0.7}
-          metalness={0.1}
         />
       </mesh>
       
@@ -541,16 +485,11 @@ function JumperWire({
       {isActive && (
         <mesh>
           <tubeGeometry args={[curve, 30, 0.015, 8, false]} />
-          <meshStandardMaterial 
+          <meshBasicMaterial 
             color="#fbbf24"
-            emissive="#fbbf24"
-            emissiveIntensity={glowIntensity * 1.5}
-            transparent
-            opacity={0.6}
           />
         </mesh>
       )}
-      
       {/* Current flow particles (electrons) */}
       <CurrentFlowParticles 
         curve={curve} 
@@ -562,24 +501,14 @@ function JumperWire({
       {/* Copper tips */}
       <mesh position={wire.fromPos}>
         <cylinderGeometry args={[0.03, 0.03, 0.05, 8]} />
-        <meshStandardMaterial 
+        <meshBasicMaterial 
           color={isActive ? '#fbbf24' : '#b87333'}
-          emissive={isActive ? '#fbbf24' : '#000000'}
-          emissiveIntensity={isActive ? 0.5 : 0}
-          metalness={1} 
-          roughness={0.1}
-          envMapIntensity={2}
         />
       </mesh>
       <mesh position={wire.toPos}>
         <cylinderGeometry args={[0.03, 0.03, 0.05, 8]} />
-        <meshStandardMaterial 
+        <meshBasicMaterial 
           color={isActive ? '#fbbf24' : '#b87333'}
-          emissive={isActive ? '#fbbf24' : '#000000'}
-          emissiveIntensity={isActive ? 0.5 : 0}
-          metalness={1} 
-          roughness={0.1}
-          envMapIntensity={2}
         />
       </mesh>
     </group>
@@ -701,18 +630,7 @@ function Scene3D({
       <directionalLight position={[-5, 5, -5]} intensity={0.4} />
       <pointLight position={[0, 8, 0]} intensity={0.6} />
       
-      {/* Environment for reflections */}
-      <Environment preset="studio" />
-      
-      {/* Soft shadows */}
-      <ContactShadows 
-        position={[0, 0.01, 0]} 
-        opacity={0.3} 
-        scale={12} 
-        blur={2} 
-        far={5}
-      />
-      
+
       {/* Breadboard */}
       <Breadboard3D />
       
@@ -994,7 +912,6 @@ export default function SimpleDemo3D() {
       <div className="flex-1 relative bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 rounded-xl overflow-hidden border border-border shadow-2xl" style={{ minHeight: '80vh', height: '80vh' }}>
         <Canvas
           camera={{ position: [10, 6, 10], fov: 45 }}
-          shadows
           gl={{ 
             antialias: true, 
             alpha: true,
