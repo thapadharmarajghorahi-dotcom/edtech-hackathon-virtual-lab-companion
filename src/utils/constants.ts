@@ -104,6 +104,21 @@ export const EXPERIMENTS: Experiment[] = [
     ],
     apparatus: ['Aquatic plant', 'Beaker', 'Funnel', 'Test tube', 'Light source', 'Sodium bicarbonate'],
   },
+  {
+    id: 'projectile-motion',
+    title: 'Projectile Motion',
+    subject: SUBJECTS.PHYSICS,
+    description: 'Study the motion of projectiles and analyze trajectory, range, maximum height, and time of flight.',
+    difficulty: 'medium',
+    duration: '45 min',
+    objectives: [
+      'Understand projectile motion equations',
+      'Analyze the effect of launch angle on range',
+      'Calculate maximum height and time of flight',
+      'Visualize trajectory in 2D and 3D',
+    ],
+    apparatus: ['Projectile launcher', 'Measuring tape', 'Protractor', 'Stopwatch', 'Target board', 'Safety goggles'],
+  },
 ];
 
 export const getSubjectColor = (subject: Subject): string => {

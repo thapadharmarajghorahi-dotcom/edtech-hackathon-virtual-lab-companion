@@ -40,3 +40,20 @@
 .read-the-docs {
   color: #888;
 }
+
+/* Background entrance animation: subtle fade + scale to give a polished startup */
+@keyframes bg-fade-scale {
+  from {
+    opacity: 0;
+    transform: scale(1.06);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.bg-entrance {
+  animation: bg-fade-scale 1200ms ease-out both;
+  will-change: transform, opacity;
+}

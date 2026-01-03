@@ -1,7 +1,7 @@
-import { Login } from '@/components/auth/Login';
+import { LandingPage } from './LandingPage';
 
 const Index = () => {
-  return <Login />;
+  return <LandingPage />;
 };
 
 export default Index;

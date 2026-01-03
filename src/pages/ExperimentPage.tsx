@@ -1,18 +1,27 @@
 import { useParams, useNavigate } from 'react-router-dom';
+import { useState, Suspense } from 'react';
 import { Navbar } from '@/components/common/Navbar';
-import { LabCanvas } from '@/components/lab/LabCanvas';
 import { ProcedureSteps } from '@/components/lab/ProcedureSteps';
 import { ObservationPanel } from '@/components/lab/ObservationPanel';
 import { EXPERIMENTS } from '@/utils/constants';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ArrowLeft, Info, Clock, Target, Beaker } from 'lucide-react';
+import SimpleDemo3D from '@/experiments/threeD/SimpleDemo3D';
+import OhmsLaw2D from '@/experiments/twoD/OhmsLaw2D';
+import ProjectileMotion2D from '@/experiments/twoD/ProjectileMotion2D';
+import ProjectileMotionAnimated from '@/experiments/animated/ProjectileMotionAnimated';
+import ProjectileMotion3D from '@/experiments/threeD/ProjectileMotion3D';
 
 export function ExperimentPage() {
   const { id } = useParams();
   const navigate = useNavigate();
   
   const experiment = EXPERIMENTS.find(e => e.id === id);
+  
+  // Determine mode type based on experiment
+  const isProjectileMotion = experiment?.id === 'projectile-motion';
+  const [mode, setMode] = useState<'2d' | 'animated' | '3d'>(isProjectileMotion ? '2d' : '2d');
   
   if (!experiment) {
     return (
@@ -33,8 +42,8 @@ export function ExperimentPage() {
     );
   }
 
-  // For now, only Ohm's Law has a simulation
-  const hasSimulation = experiment.id === 'ohms-law';
+  // Check if experiment has simulation
+  const hasSimulation = experiment.id === 'ohms-law' || experiment.id === 'projectile-motion';
 
   return (
     <div className="min-h-screen bg-background">
@@ -78,36 +87,135 @@ export function ExperimentPage() {
           </div>
         </div>
 
-        <div className="grid lg:grid-cols-3 gap-6">
-          {/* Left Column - Simulation & Observations */}
-          <div className="lg:col-span-2 space-y-6">
-            {/* Simulation Canvas */}
-            {hasSimulation ? (
-              <div className="animate-slide-up">
-                <LabCanvas />
+        {mode === '3d' && hasSimulation ? (
+          // Full-width 3D view
+          <div className="animate-slide-up">
+            <div className="mb-4 flex gap-2 items-center justify-between">
+              <div className="flex gap-2">
+                {isProjectileMotion ? (
+                  <>
+                    <Button
+                      variant={(mode as string) === '2d' ? 'default' : 'outline'}
+                      onClick={() => setMode('2d')}
+                    >
+                      2D View
+                    </Button>
+                    <Button
+                      variant={(mode as string) === 'animated' ? 'default' : 'outline'}
+                      onClick={() => setMode('animated')}
+                    >
+                      Animated
+                    </Button>
+                    <Button
+                      variant={(mode as string) === '3d' ? 'default' : 'outline'}
+                      onClick={() => setMode('3d')}
+                    >
+                      3D View
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <Button
+                      variant="outline"
+                      onClick={() => setMode('2d')}
+                    >
+                      2D View
+                    </Button>
+                    <Button
+                      variant="default"
+                      onClick={() => setMode('3d')}
+                    >
+                      3D View
+                    </Button>
+                  </>
+                )}
               </div>
-            ) : (
-              <div className="p-8 rounded-xl bg-muted/50 border border-border text-center animate-fade-in">
-                <Beaker className="h-16 w-16 mx-auto mb-4 text-muted-foreground/40" />
-                <h3 className="font-display font-semibold text-foreground mb-2">
-                  Simulation Coming Soon
-                </h3>
-                <p className="text-sm text-muted-foreground">
-                  The interactive simulation for this experiment is under development.
-                </p>
-              </div>
-            )}
-
-            {/* Observation Panel */}
-            {hasSimulation && (
-              <div className="animate-slide-up" style={{ animationDelay: '100ms' }}>
-                <ObservationPanel />
-              </div>
-            )}
+            </div>
+            {isProjectileMotion ? <ProjectileMotion3D /> : <SimpleDemo3D />}
           </div>
+        ) : (
+          <div className="grid lg:grid-cols-3 gap-6">
+            {/* Left Column - Simulation & Observations */}
+            <div className="lg:col-span-2 space-y-6">
+              {/* Simulation Canvas */}
+              {hasSimulation ? (
+                <div className="animate-slide-up">
+                  <div className="mb-4 flex gap-2">
+                    {isProjectileMotion ? (
+                      <>
+                        <Button
+                          variant={mode === '2d' ? 'default' : 'outline'}
+                          onClick={() => setMode('2d')}
+                        >
+                          2D View
+                        </Button>
+                        <Button
+                          variant={mode === 'animated' ? 'default' : 'outline'}
+                          onClick={() => setMode('animated')}
+                        >
+                          Animated
+                        </Button>
+                        <Button
+                          variant={mode === '3d' ? 'default' : 'outline'}
+                          onClick={() => setMode('3d')}
+                        >
+                          3D View
+                        </Button>
+                      </>
+                    ) : (
+                      <>
+                        <Button
+                          variant={mode === '2d' ? 'default' : 'outline'}
+                          onClick={() => setMode('2d')}
+                        >
+                          2D View
+                        </Button>
+                        <Button
+                          variant={mode === '3d' ? 'default' : 'outline'}
+                          onClick={() => setMode('3d')}
+                        >
+                          3D View
+                        </Button>
+                      </>
+                    )}
+                  </div>
 
-          {/* Right Column - Info & Procedure */}
-          <div className="space-y-6">
+                  {mode === '2d' ? (
+                    <div>
+                      {isProjectileMotion ? <ProjectileMotion2D /> : <OhmsLaw2D />}
+                    </div>
+                  ) : mode === 'animated' ? (
+                    <div>
+                      <ProjectileMotionAnimated />
+                    </div>
+                  ) : (
+                    <div>
+                      {isProjectileMotion ? <ProjectileMotion3D /> : <SimpleDemo3D />}
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div className="p-8 rounded-xl bg-muted/50 border border-border text-center animate-fade-in">
+                  <Beaker className="h-16 w-16 mx-auto mb-4 text-muted-foreground/40" />
+                  <h3 className="font-display font-semibold text-foreground mb-2">
+                    Simulation Coming Soon
+                  </h3>
+                  <p className="text-sm text-muted-foreground">
+                    The interactive simulation for this experiment is under development.
+                  </p>
+                </div>
+              )}
+
+              {/* Observation Panel */}
+              {hasSimulation && (
+                <div className="animate-slide-up" style={{ animationDelay: '100ms' }}>
+                  <ObservationPanel />
+                </div>
+              )}
+            </div>
+
+            {/* Right Column - Info & Procedure */}
+            <div className="space-y-6">
             {/* Objectives */}
             <div className="p-4 rounded-xl bg-card border border-border animate-slide-up" style={{ animationDelay: '50ms' }}>
               <h3 className="font-display font-semibold text-foreground flex items-center gap-2 mb-3">
@@ -164,6 +272,7 @@ export function ExperimentPage() {
             </div>
           </div>
         </div>
+        )}
       </main>
     </div>
   );

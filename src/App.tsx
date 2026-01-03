@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "@/context/AuthContext";
 import Index from "./pages/Index";
+import { Login } from "@/components/auth/Login";
 import { TeacherDashboard } from "./pages/teacher/TeacherDashboard";
 import { StudentDashboard } from "./pages/student/StudentDashboard";
 import { ExperimentPage } from "./pages/ExperimentPage";
@@ -44,6 +45,10 @@ function AppRoutes() {
       <Route 
         path="/" 
         element={isAuthenticated ? <Navigate to={`/${user?.role}`} replace /> : <Index />} 
+      />
+      <Route 
+        path="/login" 
+        element={isAuthenticated ? <Navigate to={`/${user?.role}`} replace /> : <Login />} 
       />
       <Route 
         path="/teacher" 
